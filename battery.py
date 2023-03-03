@@ -1,5 +1,6 @@
+#! /usr/bin/env python3
 '''
-Public domain cross-platform battery status.
+Cross-platform battery status package in Python.
 '''
 
 # SOURCES
