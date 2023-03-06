@@ -13,12 +13,12 @@ class BatteryError(Exception):
     "Cannot load a certain property."
 
 
-def _get_win32_battery(key: str):
+def _get_win32_battery(key: str, blank_ok=False):
     status = popen(f'WMIC PATH Win32_Battery Get {key}')
     if status.readline().strip() != key:
         raise BatteryError(f'Windows: unknown key {key}.')
     result = status.readline().strip()
-    if not result:
+    if not (result or blank_ok):
         raise BatteryError(f'Windows: key {key} not supported on this device.')
 
     return result
@@ -42,6 +42,20 @@ def percent():
         return float(percentage[:-2])
     if system() == 'Windows':
         return float(_get_win32_battery('EstimatedChargeRemaining'))
+    return NotImplemented
+
+def remaining():
+    """
+    The remaining battery time in minutes.
+    
+    May return None if not known (e.g. on charge)
+    """
+    if system() == 'Darwin':
+        seconds = popen(r"pmset -g batt | grep discharging | grep -Eo '\d+:\d+' | awk '{S=($1*60)+$2}END{print S}' FS=:").read().strip()
+        return int(seconds) if seconds else None
+    if system() == 'Windows':
+        seconds = _get_win32_battery('EstimatedRunTime', blank_ok=True)
+        return int(seconds) if seconds else None
     return NotImplemented
 
 def capacity():
