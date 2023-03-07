@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 "Cross-platform battery status."
 
+from functools import reduce
 from platform import system
 from os import popen
 from json import load
@@ -18,13 +19,16 @@ def _run_command(command: str):
         command = 'powershell -c "%s"' % command
     return popen(command).read().strip()
 
+def chain_maybe(output, *functions):
+    return reduce(lambda x, f: f(x), functions, output) if output else None
+
 def _getter_function(typ: str, command: str):
     if command is None:
         def f(): return NotImplemented
     elif typ == 'number':
-        def f(): return int(_run_command(command))
+        def f(): return chain_maybe(_run_command(command), int)
     elif typ == 'boolean':
-        def f(): return bool(int(_run_command(command)))
+        def f(): return chain_maybe(_run_command(command), int, bool)
     return f
 
 __all__ = []
@@ -53,7 +57,7 @@ if __name__ == '__main__':
 
     parser.add_argument(
         '--command', '-c', action='store_true',
-        help='Print the command used, instead of its result.')
+        help='Print the Terminal or PowerShell command used instead of its result.')
     
     args = parser.parse_args()
 
