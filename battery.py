@@ -1,79 +1,72 @@
 #! /usr/bin/env python3
-'''
-Cross-platform battery status package in Python.
-'''
-
-# SOURCES
-# Windows: https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/win32-battery
+"Cross-platform battery status."
 
 from platform import system
 from os import popen
+from json import load
 
-class BatteryError(Exception):
-    "Cannot load a certain property."
-
-
-def _get_win32_battery(key: str, blank_ok=False):
-    status = popen(f'WMIC PATH Win32_Battery Get {key}')
-    if status.readline().strip() != key:
-        raise BatteryError(f'Windows: unknown key {key}.')
-    result = status.readline().strip()
-    if not (result or blank_ok):
-        raise BatteryError(f'Windows: key {key} not supported on this device.')
-
-    return result
-
-def _darwin_ioreg(key: str):
-    return int(popen(rf"ioreg -l -w0 | grep '\"{key}\" = ' | grep -Eo '\d+'").read())
-
-
-def active():
-    "Return True iff the device is on battery."
+def _get_os():
     if system() == 'Darwin':
-        return 'Battery' in popen('pmset -g batt | head -n1').read()
+        return 'macos'
     if system() == 'Windows':
-        return _get_win32_battery('BatteryStatus') in ['1', '4', '5']  # discharging, low, critical
-    return NotImplemented
+        # TODO: ignore XP and below
+        return 'windows'
+    return 'unknown'
 
-def percent():
-    "Return percentage charge of battery in [0, 100]."
-    if system() == 'Darwin':
-        percentage = popen(r"pmset -g batt | grep InternalBattery | grep -Eo '\d+%'").read()
-        return float(percentage[:-2])
-    if system() == 'Windows':
-        return float(_get_win32_battery('EstimatedChargeRemaining'))
-    return NotImplemented
+def _run_command(command: str):
+    if _get_os() == 'windows':
+        command = 'powershell -c "%s"' % command
+    return popen(command).read().strip()
 
-def remaining():
-    """
-    The remaining battery time in minutes.
+def _getter_function(typ: str, command: str):
+    if command is None:
+        def f(): return NotImplemented
+    elif typ == 'number':
+        def f(): return int(_run_command(command))
+    elif typ == 'boolean':
+        def f(): return bool(int(_run_command(command)))
+    return f
+
+__all__ = []
+COMMANDS = {}
+
+with open('battery.json') as f:
+    INFO = load(f)
+    for name, f_info in INFO['functions'].items():
+        command = INFO['commands'].get(_get_os(), {}).get(name, None)
+        f = _getter_function(f_info['type'], command)
+        f.__name__ = name
+        f.__doc__ = f_info['description']
+        COMMANDS[name] = f
+
+globals().update(COMMANDS)
+__all__ = COMMANDS.keys()
+
+if __name__ == '__main__':
+    from argparse import ArgumentParser
+
+    parser = ArgumentParser(description=__doc__)
+
+    parser.add_argument(
+        'info', nargs='?', choices=__all__, default=None,
+        help='The information to obtain. Leave blank for a JSON of all info items.')
+
+    parser.add_argument(
+        '--command', '-c', action='store_true',
+        help='Print the command used, instead of its result.')
     
-    May return None if not known (e.g. on charge)
-    """
-    if system() == 'Darwin':
-        seconds = popen(r"pmset -g batt | grep discharging | grep -Eo '\d+:\d+' | awk '{S=($1*60)+$2}END{print S}' FS=:").read().strip()
-        return int(seconds) if seconds else None
-    if system() == 'Windows':
-        seconds = _get_win32_battery('EstimatedRunTime', blank_ok=True)
-        return int(seconds) if seconds else None
-    return NotImplemented
+    args = parser.parse_args()
 
-def capacity():
-    "Return actual current capacity in mAh."
-    if system() == 'Darwin':
-        return _darwin_ioreg('MaxCapacity')
-    if system() == 'Windows':
-        return float(_get_win32_battery('FullChargeCapacity'))
-    return NotImplemented
-
-def design_capacity():
-    """
-    Return battery's original design capacity in mAh.
+    def _get_key(key):
+        if key not in INFO['commands'].get(_get_os(), {}):
+            exit(4)
+        
+        if args.command:
+            return INFO['commands'][_get_os()][key]
+        else:
+            return COMMANDS[key]()
     
-    (In Windows, this is multiplied by voltage and in mWh).
-    """
-    if system() == 'Darwin':
-        return _darwin_ioreg('DesignCapacity')
-    if system() == 'Windows':
-        return float(_get_win32_battery('DesignCapacity'))
-    return NotImplemented
+    if args.info is None:
+        print({k: _get_key(k) for k in COMMANDS.keys()})
+    else:
+        print(_get_key(args.info))
