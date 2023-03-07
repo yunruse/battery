@@ -14,21 +14,27 @@ def _get_os():
         return 'windows'
     return 'unknown'
 
-def _run_command(command: str):
-    if _get_os() == 'windows':
+def _run_command(key: str, os: str = None):
+    os = os or _get_os()
+    command = INFO['commands'].get(os, {}).get(key, None)
+    if command is None:
+        raise NotImplementedError('Unknown command')
+    if os == 'windows':
         command = 'powershell -c "%s"' % command
     return popen(command).read().strip()
 
 def chain_maybe(output, *functions):
     return reduce(lambda x, f: f(x), functions, output) if output else None
 
-def _getter_function(typ: str, command: str):
-    if command is None:
-        def f(): return NotImplemented
-    elif typ == 'number':
-        def f(): return chain_maybe(_run_command(command), int)
+def _getter_function(typ: str, key: str):
+    chain = []
+    if typ == 'number':
+        chain = [int]
     elif typ == 'boolean':
-        def f(): return chain_maybe(_run_command(command), int, bool)
+        chain = [int, bool]
+    
+    def f(os: str = None):
+        return chain_maybe(_run_command(key, os), *chain)
     return f
 
 __all__ = []
@@ -37,14 +43,14 @@ COMMANDS = {}
 with open('battery.json') as f:
     INFO = load(f)
     for name, f_info in INFO['functions'].items():
-        command = INFO['commands'].get(_get_os(), {}).get(name, None)
-        f = _getter_function(f_info['type'], command)
+        f = _getter_function(f_info['type'], name)
         f.__name__ = name
         f.__doc__ = f_info['description']
         COMMANDS[name] = f
 
 globals().update(COMMANDS)
 __all__ = COMMANDS.keys()
+OSES = INFO['commands'].keys()
 
 if __name__ == '__main__':
     from argparse import ArgumentParser
@@ -58,17 +64,21 @@ if __name__ == '__main__':
     parser.add_argument(
         '--command', '-c', action='store_true',
         help='Print the Terminal or PowerShell command used instead of its result.')
+
+    parser.add_argument(
+        '--os', nargs='?', choices=OSES, default=None,
+        help='Override the operating system.')
     
     args = parser.parse_args()
 
     def _get_key(key):
-        if key not in INFO['commands'].get(_get_os(), {}):
+        os = args.os or _get_os()
+        if key not in INFO['commands'].get(os, {}):
             exit(4)
-        
         if args.command:
-            return INFO['commands'][_get_os()][key]
+            return repr(INFO['commands'][os][key])[1:-1]
         else:
-            return COMMANDS[key]()
+            return COMMANDS[key](os=os)
     
     if args.info is None:
         print({k: _get_key(k) for k in COMMANDS.keys()})
