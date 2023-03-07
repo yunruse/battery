@@ -2,17 +2,22 @@
 "Cross-platform battery status."
 
 from functools import reduce
-from platform import system
+from platform import release, system
 from os import popen
 from json import load
 
+def _kernel_ver():
+    # pad to ensure always a 3-tuple
+    return (tuple(map(int, release().split('.'))) + (0, 0, 0))[:3]
+
 def _get_os():
-    if system() == 'Darwin':
+    if system() == 'Darwin' and _kernel_ver() >= (6, 0, 1):
+        # may use pmset (10.2 and above)
         return 'macos'
-    if system() == 'Windows':
-        # TODO: ignore XP and below
+    if system() == 'Windows' and _kernel_ver() >= (6, 0, 0):
+        # may utilise WMIC (Vista and above)
         return 'windows'
-    return 'unknown'
+    return 'UNSUPPORTED'
 
 def _run_command(key: str, os: str = None):
     os = os or _get_os()

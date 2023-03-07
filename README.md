@@ -14,9 +14,10 @@ Public domain. Uses semantic versioning. Pull requests are always welcome!
 | `design_capacity`   | ✔️     | ✔️       |
 
 Note that:
-- If a method is not supported for an OS, `NotImplemented` is returned.
-- Some device drivers will not return information (a `BatteryError` is raised).
-- Windows XP and below is not supported.
+- macOS is supported for 10.2 and later.
+- Windows is supported for Vista and later.
+
+A `NotImplementedError` is raised for unsupported OSes or versions.
 
 # Usage example
 
