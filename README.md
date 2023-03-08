@@ -25,7 +25,7 @@ As an import:
 
 ```py
 import battery
-source = 'battery' if battery.active() else 'AC power'
+source = 'battery' if battery.is_discharging() else 'AC power'
 print(f'On {source} at {battery.percent()}%')
 print(f'Battery is at {battery.capacity() / battery.design_capacity()*100:4.1f}% health.')
 ```
