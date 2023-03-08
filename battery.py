@@ -4,19 +4,16 @@
 from functools import reduce
 from platform import release, system
 from os import popen
-from json import dumps, load
+from toml import load
+from json import dumps
 
 def _kernel_ver():
     # pad to ensure always a 3-tuple
     return (tuple(map(int, release().split('.'))) + (0, 0, 0))[:3]
 
 def _get_os():
-    if system() == 'Darwin' and _kernel_ver() >= (6, 0, 1):
-        # may use pmset (10.2 and above)
-        return 'macos'
-    if system() == 'Windows' and _kernel_ver() >= (6, 0, 0):
-        # may utilise WMIC (Vista and above)
-        return 'windows'
+    if system() == 'Darwin'  and _kernel_ver() >= (6, 0, 1):  return 'macos'  # >= 10.2
+    if system() == 'Windows' and _kernel_ver() >= (6, 0, 0):  return 'windows'  # >= Vista
     return 'UNSUPPORTED'
 
 def _run_command(key: str, os: str = None):
@@ -32,10 +29,8 @@ def chain_maybe(output, *functions):
     return reduce(lambda x, f: f(x), functions, output) if output else None
 
 def _getter_function(typ: str, key: str):
-    chain = []
-    if typ == 'number':
-        chain = [int]
-    elif typ == 'boolean':
+    chain = [int]
+    if typ == 'boolean':
         chain = [int, bool]
     
     def f(os: str = None):
@@ -45,11 +40,11 @@ def _getter_function(typ: str, key: str):
 __all__ = []
 COMMANDS = {}
 
-PATH = __file__.replace('.py', '.json')
+PATH = __file__.replace('.py', '.toml')
 with open(PATH) as f:
     INFO = load(f)
     for name, f_info in INFO['functions'].items():
-        f = _getter_function(f_info['type'], name)
+        f = _getter_function(f_info.get('type'), name)
         f.__name__ = name
         f.__doc__ = f_info['description']
         COMMANDS[name] = f

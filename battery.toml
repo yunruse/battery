@@ -1,0 +1,34 @@
+[functions.is_discharging]
+description = "Return True iff the device is on battery."
+type = "boolean"
+[functions.percent]
+description = "Return percentage charge of battery in [0, 100]."
+[functions.minutes_remaining]
+description = "Minutes of battery life left (may be empty if not known yet)."
+[functions.capacity]
+description = "Battery's current capacity in mAh."
+[functions.design_capacity]
+description = "Battery's original capacity in mAh (in Windows: mWh)."
+
+
+# Some of the extra pipes are to produce a standardised format and may not be necessary depending on your purpose.
+# The unixy `grep -qv foo; echo $?` idiom is useful for "does this contain foo"
+
+[commands.macos]
+# pmset -g batt outputs a fairly standard format
+is_discharging = "pmset -g batt | head -n1 | grep -qv \"'Battery Power'\"; echo $?"
+percent = "pmset -g batt | grep InternalBattery | grep -Eo '\\d+%'| grep -Eo '\\d+'"
+minutes_remaining = "pmset -g batt | grep discharging | grep -Eo '\\d+:\\d+' | awk '{S=($1*60)+$2}END{print S}' FS=:"
+# TODO: can these be faster? it's a tad slow
+capacity = "ioreg -l -w0 | grep '\"MaxCapacity\" = ' | grep -Eo '\\d+'"
+design_capacity = "ioreg -l -w0 | grep '\"DesignCapacity\" = ' | grep -Eo '\\d+'"
+
+[commands.windows] # using powershell
+# cf https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/win32-battery
+is_discharging = "((WMIC PATH Win32_Battery Get BatteryStatus) -split '\n')[2] -match '[245]'"
+percent = "((WMIC PATH Win32_Battery Get EstimatedChargeRemaining) -split '\n')[2]"
+# 0x4444444 = 71582788 means N/A (not a magical 136yr battery. imagine)
+# for some reason PS dislikes a ternary if operator here, so we use the classic index-list-by-bool trick
+minutes_remaining = "[int32]((WMIC PATH Win32_Battery Get EstimatedRunTime) -split '\n')[2] | %{@('', $_)[$_ -ne 71582788]}"
+capacity = "((WMIC PATH Win32_Battery Get FullChargeCapacity) -split '\n')[2]"
+design_capacity = "((WMIC PATH Win32_Battery Get DesignCapacity) -split '\n')[2]"
