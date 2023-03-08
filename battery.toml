@@ -1,14 +1,16 @@
 [functions.is_discharging]
-description = "Return True iff the device is on battery."
+description = "Check if battery is discharging (i.e. in use)."
 type = "boolean"
 [functions.percent]
 description = "Return percentage charge of battery in [0, 100]."
 [functions.minutes_remaining]
 description = "Minutes of battery life left (may be empty if not known yet)."
+[functions.minutes_until_charged]
+description = "Minutes until the battery is charged (may be 0 if full, or empty if not on charge or not known)."
 [functions.capacity]
-description = "Battery's current capacity in mAh."
+description = "Battery's current capacity in mAh (mWh on Windows)."
 [functions.design_capacity]
-description = "Battery's original capacity in mAh (in Windows: mWh)."
+description = "Battery's original capacity in mAh (mWh on Windows)."
 
 
 # Some of the extra pipes are to produce a standardised format and may not be necessary depending on your purpose.
