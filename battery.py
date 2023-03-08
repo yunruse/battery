@@ -59,21 +59,24 @@ __all__ = COMMANDS.keys()
 OSES = INFO['commands'].keys()
 
 if __name__ == '__main__':
-    from argparse import ArgumentParser
+    from argparse import ArgumentParser, RawTextHelpFormatter
 
-    parser = ArgumentParser(description=__doc__)
+    parser = ArgumentParser(description=__doc__, formatter_class=RawTextHelpFormatter)
 
     parser.add_argument(
-        'info', nargs='?', choices=__all__, default=None,
-        help='The information to obtain. Leave blank for a JSON of all info items.')
+        'info', choices=__all__, metavar='FUNC', default=None, nargs='?',
+        help='The information to obtain. Leave blank for a JSON of all info items.'
+        ' The available info keys are:\n' + '\n'.join(
+            '- {:<24} {}'.format(k+':', v['description']) for k, v in INFO['functions'].items()
+        ))
 
     parser.add_argument(
         '--command', '-c', action='store_true',
         help='Print the Terminal or PowerShell command used instead of its result.')
 
     parser.add_argument(
-        '--os', nargs='?', choices=OSES, default=None,
-        help='Override the operating system.')
+        '--os', choices=OSES, metavar='OS', default=None,
+        help='Override the operating system. One of: ' + ', '.join(OSES))
     
     args = parser.parse_args()
 
