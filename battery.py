@@ -4,7 +4,7 @@
 from functools import reduce
 from platform import release, system
 from os import popen
-from json import load
+from json import dumps, load
 
 def _kernel_ver():
     # pad to ensure always a 3-tuple
@@ -45,7 +45,8 @@ def _getter_function(typ: str, key: str):
 __all__ = []
 COMMANDS = {}
 
-with open('battery.json') as f:
+PATH = __file__.replace('.py', '.json')
+with open(PATH) as f:
     INFO = load(f)
     for name, f_info in INFO['functions'].items():
         f = _getter_function(f_info['type'], name)
@@ -76,16 +77,19 @@ if __name__ == '__main__':
     
     args = parser.parse_args()
 
+    def sanitise(command):
+        return command.replace('\n', '\\n')
+
     def _get_key(key):
         os = args.os or _get_os()
         if key not in INFO['commands'].get(os, {}):
             exit(4)
         if args.command:
-            return repr(INFO['commands'][os][key])[1:-1]
+            return sanitise(INFO['commands'][os][key])
         else:
             return COMMANDS[key](os=os)
     
     if args.info is None:
-        print({k: _get_key(k) for k in COMMANDS.keys()})
+        print(dumps({k: _get_key(k) for k in COMMANDS.keys()}))
     else:
         print(_get_key(args.info))
