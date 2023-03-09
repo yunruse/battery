@@ -13,7 +13,7 @@ The following functions are available:
 The following OS versions are supported for these functions:
 
 - macOS 10.2 and later
-- Windows Vista and later
+- Windows Vista and later (`minutes_until_charged` is not supported by most drivers)
 
 A `NotImplementedError` is raised for unsupported OSes or versions.
 
