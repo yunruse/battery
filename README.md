@@ -5,8 +5,8 @@ The following functions are available:
 - `is_discharging`:        Check if battery is discharging (i.e. in use).
 - `is_charging`:           Check if battery is charging.
 - `percent`:               Return percentage charge of battery in [0, 100].
-- `minutes_remaining`:     Minutes of battery life left (may be empty if not known yet).
-- `minutes_until_charged`: Minutes until the battery is charged (may be 0 if full, or empty if not on charge or not known).
+- `minutes_to_empty`:     Minutes of battery life left (may be empty if not known yet).
+- `minutes_to_full`: Minutes until the battery is charged (may be 0 if full, or empty if not on charge or not known).
 - `capacity`:              Battery's current capacity in mAh (mWh on Windows).
 - `design_capacity`:       Battery's original capacity in mAh (mWh on Windows).
 
@@ -37,7 +37,7 @@ On the CLI:
 
 ```
 $ python -m battery
-{"is_discharging": true, "percent": 92, "minutes_remaining": 215, "minutes_until_charged": null, "capacity": 2388, "design_capacity": 4381}
+{"is_discharging": true, "percent": 92, "minutes_to_empty": 215, "minutes_to_full": null, "capacity": 2388, "design_capacity": 4381}
 $ python -m battery percent
 92
 ```
