@@ -37,9 +37,9 @@ design_capacity = "ioreg -l -w0 | grep '\"DesignCapacity\" = ' | grep -Eo '\\d+'
 is_discharging = "upower -d | grep 'state' | head -n1 | grep -qv 'discharging'; echo $? "
 is_charging = "upower -d | grep 'state' | head -n1 | grep -qv 'charging'; echo $?"
 percent = "upower -d | grep percentage | head -n1 | grep -Eo '[0-9]+'"
-# TODO: figure out how to handle 'minutes' as well as hours in awk
-minutes_remaining = "upower -d | grep 'time to empty' | head -n1 | grep hours | grep -Eo '[0-9\\.]+' | awk '{print int($1*60)'"
-minutes_until_charged = "upower -d | grep 'time to full' | head -n1 | grep hours | grep -Eo '[0-9\\.]+' | awk '{print int($1*60)'"
+# upower outputs in minutes and hours; awk handles this
+minutes_remaining = "upower -d | grep 'time to empty' | head -n1 | grep hours | grep -Eo '[0-9\\.]+ .' | awk '{print int($1 * ($2==\"m\"?1:60))}'"
+minutes_until_charged = "upower -d | grep 'time to full' | head -n1 | grep hours | grep -Eo '[0-9\\.]+ .' | awk '{print int($1 * ($2==\"m\"?1:60))}'"
 capacity = "upower -d | grep 'energy-full:' | head -n1 | grep -Eo '[0-9]+' | awk '{print $1 * 1000}'"
 design_capacity = "upower -d | grep 'energy-full-design:' | head -n1 | grep -Eo '[0-9]+' | awk '{print $1 * 1000}'"
 
