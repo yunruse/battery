@@ -10,7 +10,8 @@ from json import dumps, load
 
 def _kernel_ver():
     # pad to ensure always a 3-tuple
-    return (tuple(map(int, release().split('.'))) + (0, 0, 0))[:3]
+    rel = release().split('-')[0]
+    return (tuple(map(int, rel.split('.'))) + (0, 0, 0))[:3]
 
 def _get_os():
     if system() == 'Darwin'  and _kernel_ver() >= (6, 0, 1):  return 'macos'  # >= 10.2
