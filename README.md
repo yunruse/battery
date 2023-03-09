@@ -45,6 +45,8 @@ $ python -m battery percent
 
 In the unix philosophy: do a small thing well. 
 
+Also check out [`psutil`](https://github.com/giampaolo/psutil/)!
+
 As the whole package is **public domain**, please hack this code into whatever. (but tell me! I wanna see your cool stuff!)
 
 Note that the Python is just a wrapper around the annotated `.toml` of commands that give standardised output.
