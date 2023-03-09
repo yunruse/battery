@@ -13,6 +13,7 @@ The following functions are available:
 The following OS versions are supported for these functions:
 
 - macOS 10.2 and later
+- Linux 2.6.24 and later
 - Windows Vista and later
 
 A `NotImplementedError` is raised for unsupported OSes or versions.

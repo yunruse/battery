@@ -14,6 +14,7 @@ def _kernel_ver():
 
 def _get_os():
     if system() == 'Darwin'  and _kernel_ver() >= (6, 0, 1):  return 'macos'  # >= 10.2
+    if system() == 'Linux'   and _kernel_ver() >= (2, 6, 24): return 'linux'
     if system() == 'Windows' and _kernel_ver() >= (6, 0, 0):  return 'windows'  # >= Vista
     return 'UNSUPPORTED'
 
