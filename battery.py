@@ -1,4 +1,6 @@
 #! /usr/bin/env python3
+# Most of this is a wrapper around battery.toml.
+# If you want to know the commands, check that!
 "Cross-platform battery status."
 
 from functools import reduce
@@ -58,16 +60,18 @@ if __name__ == '__main__':
 
     parser = ArgumentParser(description=__doc__, formatter_class=RawTextHelpFormatter)
 
+    FUNCTIONS = '\n'.join(
+        '- {:<24} {}'.format('`{}`:'.format(k), v['description'])
+        for k, v in INFO['functions'].items())
+
     parser.add_argument(
         'info', choices=__all__, metavar='FUNC', default=None, nargs='?',
         help='The information to obtain. Leave blank for a JSON of all info items.'
-        ' The available info keys are:\n' + '\n'.join(
-            '- {:<24} {}'.format(k+':', v['description']) for k, v in INFO['functions'].items()
-        ))
+        ' The available info keys are:\n' + FUNCTIONS)
 
     parser.add_argument(
         '--command', '-c', action='store_true',
-        help='Print the Terminal or PowerShell command used instead of its result.')
+        help='Print the Terminal or PowerShell command used on this OS.')
 
     parser.add_argument(
         '--os', choices=OSES, metavar='OS', default=None,

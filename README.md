@@ -1,23 +1,24 @@
-# `battery` v0.1
-Cross-platform battery status package in Python. 
+# `battery` v1.0: Cross-platform battery status
 
-Public domain. Uses semantic versioning. Pull requests are always welcome!
+The following functions are available:
 
-# Compatibility
+- `is_discharging`:        Check if battery is discharging (i.e. in use).
+- `percent`:               Return percentage charge of battery in [0, 100].
+- `minutes_remaining`:     Minutes of battery life left (may be empty if not known yet).
+- `minutes_until_charged`: Minutes until the battery is charged (may be 0 if full, or empty if not on charge or not known).
+- `capacity`:              Battery's current capacity in mAh (mWh on Windows).
+- `design_capacity`:       Battery's original capacity in mAh (mWh on Windows).
 
-|  Method             | macOS | Windows |
-| :------------------ | ----- | ------- |
-| `active`            | ✔️     | ✔️       |
-| `percent`           | ✔️     | ✔️       |
-| `minutes_remaining` | ✔️     | ✔️       |
-| `capacity`          | ✔️     | ✔️       |
-| `design_capacity`   | ✔️     | ✔️       |
+The following OS versions are supported for these functions:
 
-Note that:
-- macOS is supported for 10.2 and later.
-- Windows is supported for Vista and later.
+- macOS 10.2 and later
+- Windows Vista and later
 
 A `NotImplementedError` is raised for unsupported OSes or versions.
+
+Pull requests and issues are always welcome for better compatibility!
+
+Semantic versioning is used.
 
 # Usage example
 
@@ -30,13 +31,19 @@ print(f'On {source} at {battery.percent()}%')
 print(f'Battery is at {battery.capacity() / battery.design_capacity()*100:4.1f}% health.')
 ```
 
-On the CLI (here fetching the OS-specific command on macOS):
+On the CLI:
 
 ```
 $ python -m battery
-{'active': False, 'percent': 92, 'minutes_remaining': None, 'capacity': 2431, 'design_capacity': 4381}
+{"is_discharging": true, "percent": 92, "minutes_remaining": 215, "minutes_until_charged": null, "capacity": 2388, "design_capacity": 4381}
 $ python -m battery percent
 92
-$ python -m battery --command capacity
-ioreg -l -w0 | grep '"MaxCapacity" = ' | grep -Eo '\d+'
 ```
+
+# Other notes
+
+In the unix philosophy: do a small thing well. 
+
+As the whole package is **public domain**, please hack this code into whatever. (but tell me! I wanna see your cool stuff!)
+
+Note that the Python is just a wrapper around the annotated `.toml` of commands that give standardised output.
