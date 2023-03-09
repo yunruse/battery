@@ -6,8 +6,7 @@
 from functools import reduce
 from platform import release, system
 from os import popen
-from toml import load
-from json import dumps
+from json import dumps, load
 
 def _kernel_ver():
     # pad to ensure always a 3-tuple
@@ -42,7 +41,7 @@ def _getter_function(typ: str, key: str):
 __all__ = []
 COMMANDS = {}
 
-PATH = __file__.replace('.py', '.toml')
+PATH = __file__.replace('.py', '.json')
 with open(PATH) as f:
     INFO = load(f)
     for name, f_info in INFO['functions'].items():

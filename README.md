@@ -47,3 +47,4 @@ In the unix philosophy: do a small thing well.
 As the whole package is **public domain**, please hack this code into whatever. (but tell me! I wanna see your cool stuff!)
 
 Note that the Python is just a wrapper around the annotated `.toml` of commands that give standardised output.
+(For compatibility this is converted to `.json` for use.)
