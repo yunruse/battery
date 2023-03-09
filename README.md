@@ -3,6 +3,7 @@
 The following functions are available:
 
 - `is_discharging`:        Check if battery is discharging (i.e. in use).
+- `is_charging`:           Check if battery is charging.
 - `percent`:               Return percentage charge of battery in [0, 100].
 - `minutes_remaining`:     Minutes of battery life left (may be empty if not known yet).
 - `minutes_until_charged`: Minutes until the battery is charged (may be 0 if full, or empty if not on charge or not known).

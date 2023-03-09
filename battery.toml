@@ -1,6 +1,9 @@
 [functions.is_discharging]
 description = "Check if battery is discharging (i.e. in use)."
 type = "boolean"
+[functions.is_charging]
+description = "Check if battery is charging."
+type = "boolean"
 [functions.percent]
 description = "Return percentage charge of battery in [0, 100]."
 [functions.minutes_remaining]
@@ -19,6 +22,7 @@ description = "Battery's original capacity in mAh (mWh on Windows)."
 [commands.macos]
 # pmset -g batt outputs a fairly standard format
 is_discharging = "pmset -g batt | head -n1 | grep -qv \"'Battery Power'\"; echo $?"
+is_charging = "pmset -g batt | grep InternalBattery | grep -qv '; charging'; echo $?"
 percent = "pmset -g batt | grep InternalBattery | grep -Eo '\\d+%'| grep -Eo '\\d+'"
 minutes_remaining = "pmset -g batt | grep discharging | grep -Eo '\\d+:\\d+' | awk '{S=($1*60)+$2}END{print S}' FS=:"
 minutes_until_charged = "pmset -g batt | grep ' charg' | grep -Eo '\\d+:\\d+' | awk '{S=($1*60)+$2}END{print S}' FS=:"
@@ -28,7 +32,8 @@ design_capacity = "ioreg -l -w0 | grep '\"DesignCapacity\" = ' | grep -Eo '\\d+'
 
 [commands.windows] # using powershell
 # cf https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/win32-battery
-is_discharging = "((WMIC PATH Win32_Battery Get BatteryStatus) -split '\n')[2] -match '[245]'"
+is_discharging = "((WMIC PATH Win32_Battery Get BatteryStatus) -split '\n')[2] -match '[145]$'"
+is_charging = "((WMIC PATH Win32_Battery Get BatteryStatus) -split '\n')[2] -match '[36789]$'"
 percent = "((WMIC PATH Win32_Battery Get EstimatedChargeRemaining) -split '\n')[2]"
 # 0x4444444 = 71582788 means N/A (not a magical 136yr battery. imagine)
 # for some reason PS dislikes a ternary if operator here, so we use the classic index-list-by-bool trick
