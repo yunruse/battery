@@ -5,10 +5,10 @@ The following functions are available:
 - `is_discharging`:        Check if battery is discharging (i.e. in use).
 - `is_charging`:           Check if battery is charging.
 - `percent`:               Return percentage charge of battery in [0, 100].
-- `minutes_to_empty`:     Minutes of battery life left (may be empty if not known yet).
-- `minutes_to_full`: Minutes until the battery is charged (may be 0 if full, or empty if not on charge or not known).
-- `capacity`:              Battery's current capacity in mAh (mWh on Windows).
-- `design_capacity`:       Battery's original capacity in mAh (mWh on Windows).
+- `minutes_to_empty`:      Minutes of battery life left (may be empty if not known yet).
+- `minutes_to_full`:       Minutes until the battery is charged (may be 0 if full, or empty if not on charge or not known).
+- `capacity`:              Battery's current capacity in mWh (mAh on macOS).
+- `design_capacity`:       Battery's original capacity in mWh (mAh on macOS).
 
 The following OS versions are supported for these functions:
 
