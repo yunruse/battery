@@ -34,8 +34,8 @@ design_capacity = "ioreg -l -w0 | grep '\"DesignCapacity\" = ' | grep -Eo '\\d+'
 # cf https://askubuntu.com/questions/69556/how-do-i-check-the-batterys-status-via-the-terminal
 # note that `upower -d | grep FOO | head -n1`
 # is faster than `upower -i $(upower -e | grep FOO | head -n1 ) | grep FOO`
-is_discharging = "upower -d | grep 'state' | head -n1 | grep -qv 'discharging'; echo $? "
-is_charging = "upower -d | grep 'state' | head -n1 | grep -qv 'charging'; echo $?"
+is_discharging = "upower -d | grep state | head -n1 | grep -qv 'discharging'; echo $? "
+is_charging = "upower -d | grep state | head -n1 | grep -qv ' charging'; echo $?"
 percent = "upower -d | grep percentage | head -n1 | grep -Eo '[0-9]+'"
 # upower outputs in minutes and hours; awk handles this
 minutes_to_empty = "upower -d | grep 'time to empty' | head -n1 | grep hours | grep -Eo '[0-9\\.]+ .' | awk '{print int($1 * ($2==\"m\"?1:60))}'"
