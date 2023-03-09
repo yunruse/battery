@@ -32,8 +32,8 @@ design_capacity = "ioreg -l -w0 | grep '\"DesignCapacity\" = ' | grep -Eo '\\d+'
 
 [commands.windows] # using powershell
 # cf https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/win32-battery
-is_discharging = "((WMIC PATH Win32_Battery Get BatteryStatus) -split '\n')[2] -match '[145]$'"
-is_charging = "((WMIC PATH Win32_Battery Get BatteryStatus) -split '\n')[2] -match '[36789]$'"
+is_discharging = "(Get-Wmi-Object -Class 'BatteryStatus' -Namespace 'root\\wmi').Discharging | %{[int32]$_}"
+is_charging = "(Get-Wmi-Object -Class 'BatteryStatus' -Namespace 'root\\wmi').Charging | %{[int32]$_}"
 percent = "((WMIC PATH Win32_Battery Get EstimatedChargeRemaining) -split '\n')[2]"
 # 0x4444444 = 71582788 means N/A (not a magical 136yr battery. imagine)
 # for some reason PS dislikes a ternary if operator here, so we use the classic index-list-by-bool trick
