@@ -21,6 +21,7 @@ description = "Battery's original capacity in mAh (mWh on Windows)."
 is_discharging = "pmset -g batt | head -n1 | grep -qv \"'Battery Power'\"; echo $?"
 percent = "pmset -g batt | grep InternalBattery | grep -Eo '\\d+%'| grep -Eo '\\d+'"
 minutes_remaining = "pmset -g batt | grep discharging | grep -Eo '\\d+:\\d+' | awk '{S=($1*60)+$2}END{print S}' FS=:"
+minutes_until_charged = "pmset -g batt | grep ' charg' | grep -Eo '\\d+:\\d+' | awk '{S=($1*60)+$2}END{print S}' FS=:"
 # TODO: can these be faster? it's a tad slow
 capacity = "ioreg -l -w0 | grep '\"MaxCapacity\" = ' | grep -Eo '\\d+'"
 design_capacity = "ioreg -l -w0 | grep '\"DesignCapacity\" = ' | grep -Eo '\\d+'"
