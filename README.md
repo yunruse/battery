@@ -33,7 +33,7 @@ print(f'On {source} at {battery.percent()}%')
 print(f'Battery is at {battery.capacity() / battery.design_capacity()*100:4.1f}% health.')
 ```
 
-On the CLI:
+The CLI always returns a JSON value:
 
 ```
 $ python -m battery

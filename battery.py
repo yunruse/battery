@@ -95,4 +95,4 @@ if __name__ == '__main__':
     if args.info is None:
         print(dumps({k: _get_key(k) for k in COMMANDS.keys()}))
     else:
-        print(_get_key(args.info))
+        print(dumps(_get_key(args.info)))
