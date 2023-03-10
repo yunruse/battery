@@ -10,21 +10,19 @@ The following functions are available:
 - `capacity`:              Battery's current capacity in mWh (mAh on macOS).
 - `design_capacity`:       Battery's original capacity in mWh (mAh on macOS).
 
-The following OS versions are supported for these functions:
+The following OS versions are supported:
 
 - macOS 10.2 and later
 - Linux 2.6.24 and later
 - Windows Vista and later
 
-A `NotImplementedError` is raised for unsupported OSes or versions.
+A `NotImplementedError` is raised for unsupported OSes.
 
 Pull requests and issues are always welcome for better compatibility!
 
-Semantic versioning is used.
-
 # Usage example
 
-As an import:
+Obtain with `pip install battery-yunruse` and use like;
 
 ```py
 import battery
@@ -48,7 +46,7 @@ In the unix philosophy: do a small thing well.
 
 Also check out [`psutil`](https://github.com/giampaolo/psutil/)!
 
-As the whole package is **public domain**, please hack this code into whatever. (but tell me! I wanna see your cool stuff!)
+As the whole package is **public domain**, please hack this code into whatever purpose needed.
 
 Note that the Python is just a wrapper around the annotated `.toml` of commands that give standardised output.
 (For compatibility this is converted to `.json` for use.)

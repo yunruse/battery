@@ -1,0 +1,35 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+artifacts = ["battery.json"]
+exclude = ["makefile", "token.txt"]
+
+[project]
+name = "battery_yunruse"
+version = "1.0.0"
+description = "Cross-platform battery status"
+readme = "README.md"
+requires-python = ">=3.7"
+
+license = "LicenseRef-Public-Domain"
+keywords = ["battery", "cross-platform"]
+classifiers = [
+    "License :: Public Domain",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3.7",
+    "Topic :: System",
+    "Topic :: System :: Hardware",
+    "Typing :: Stubs Only",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/yunruse/battery"
+"Bug Tracker" = "https://github.com/yunruse/battery/issues"
+
+[[project.authors]]
+name = "Mia yun Ruse"
+email = "mia@yunru.se"

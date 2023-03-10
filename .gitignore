@@ -1,4 +1,8 @@
+# cruft
 .DS_Store
 __pycache__
 
+# build
 battery.json
+dist/
+token*.txt
