@@ -51,6 +51,6 @@ percent = "((WMIC PATH Win32_Battery Get EstimatedChargeRemaining) -split '\\n')
 # 0x4444444 = 71582788 means N/A (not a magical 136yr battery. imagine)
 # for some reason PS dislikes a ternary if operator here, so we use the classic index-list-by-bool trick
 minutes_to_empty = "[int32]((WMIC PATH Win32_Battery Get EstimatedRunTime) -split '\\n')[2] | %{@('', $_)[$_ -ne 71582788]}"
-minutes_to_full = "Get-WmiObject -Class 'BatteryStatus' -Namespace 'root\\wmi' | Where-Object Charging | %{[int32](((Get-WmisObject -Class 'BatteryFullChargedCapacity' -Namespace 'root\\wmi').FullChargedCapacity - $_.RemainingCapacity) / $_.ChargeRate * 60)}"
+minutes_to_full = "Get-WmiObject -Class 'BatteryStatus' -Namespace 'root\\wmi' | Where-Object Charging | %{[int32](((Get-WmiObject -Class 'BatteryFullChargedCapacity' -Namespace 'root\\wmi').FullChargedCapacity - $_.RemainingCapacity) / $_.ChargeRate * 60)}"
 capacity = "((WMIC PATH Win32_Battery Get FullChargeCapacity) -split '\\n')[2]"
 design_capacity = "((WMIC PATH Win32_Battery Get DesignCapacity) -split '\\n')[2]"
