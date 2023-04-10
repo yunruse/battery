@@ -19,7 +19,7 @@ def _get_os():
     if system() == 'Windows' and _kernel_ver() >= (6, 0, 0):  return 'windows'  # >= Vista
     return 'UNSUPPORTED'
 
-def _run_command(key: str, os: str = None):
+def _run_command(key: str, os: str | None = None):
     os = os or _get_os()
     command = INFO['commands'].get(os, {}).get(key, None)
     if command is None:
@@ -36,7 +36,7 @@ def _getter_function(typ: str, key: str):
     if typ == 'boolean':
         chain = [int, bool]
     
-    def f(os: str = None):
+    def f(os: str | None = None):
         return chain_maybe(_run_command(key, os), *chain)
     return f
 
