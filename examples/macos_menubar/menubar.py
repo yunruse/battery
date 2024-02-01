@@ -4,7 +4,7 @@ from battery import percent, is_charging, is_discharging, minutes_to_empty, minu
 import rumps
 
 def timestring():
-    time: None | int = None
+    time = None  # type: int | None
     status = ""
     if is_charging():
         status = "⚡️"

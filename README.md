@@ -22,7 +22,7 @@ Pull requests and issues are always welcome for better compatibility!
 
 # Usage example
 
-Obtain with `pip install battery-yunruse` and use like;
+Obtain with `pip install battery` and use like:
 
 ```py
 import battery
@@ -42,11 +42,9 @@ $ python -m battery percent
 
 # Other notes
 
-In the unix philosophy: do a small thing well. 
+This package is **public domain**! Feel free to hack with it as needed.
 
 Also check out [`psutil`](https://github.com/giampaolo/psutil/)!
 
-As the whole package is **public domain**, please hack this code into whatever purpose needed.
-
 Note that the Python is just a wrapper around the annotated `.toml` of commands that give standardised output.
-(For compatibility this is converted to `.json` for use.)
+(For maximum compatibility this is converted via `make` to a `.json` for use.)

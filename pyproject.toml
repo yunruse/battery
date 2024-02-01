@@ -7,8 +7,8 @@ artifacts = ["battery.json"]
 exclude = ["makefile", "token.txt"]
 
 [project]
-name = "battery_yunruse"
-version = "1.0.0"
+name = "battery"
+version = "1.0.2"
 description = "Cross-platform battery status"
 readme = "README.md"
 requires-python = ">=3.7"
