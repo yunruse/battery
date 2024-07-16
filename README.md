@@ -1,34 +1,13 @@
-# `battery` v1.0: Cross-platform battery status
+# Cross-platform, Python battery status
 
-The following functions are available:
-
-- `is_discharging`:        Check if battery is discharging (i.e. in use).
-- `is_charging`:           Check if battery is charging.
-- `percent`:               Return percentage charge of battery in [0, 100].
-- `minutes_to_empty`:      Minutes of battery life left (may be empty if not known yet).
-- `minutes_to_full`:       Minutes until the battery is charged (may be 0 if full, or empty if not on charge or not known).
-- `capacity`:              Battery's current capacity in mWh (mAh on macOS).
-- `design_capacity`:       Battery's original capacity in mWh (mAh on macOS).
-
-The following OS versions are supported:
-
-- macOS 10.2 and later
-- Linux 2.6.24 and later
-- Windows Vista and later
-
-A `NotImplementedError` is raised for unsupported OSes.
-
-Pull requests and issues are always welcome for better compatibility!
-
-# Usage example
-
-Obtain with `pip install battery-yunruse` and use like;
+Simply `pip install battery` and use like:
 
 ```py
 import battery
 source = 'battery' if battery.is_discharging() else 'AC power'
 print(f'On {source} at {battery.percent()}%')
-print(f'Battery is at {battery.capacity() / battery.design_capacity()*100:4.1f}% health.')
+health = battery.capacity() / battery.design_capacity()
+print(f'Battery is at {health*100:4.1f}% health.')
 ```
 
 The CLI always returns a JSON value:
@@ -40,13 +19,30 @@ $ python -m battery percent
 92
 ```
 
-# Other notes
+## Functions
 
-In the unix philosophy: do a small thing well. 
+The following functions are available:
+
+- `is_discharging`:        **True iff battery is discharging.**
+- `is_charging`:           **True iff battery is charging.**
+- `percent`:               **Integer percentage charge of battery**.
+- `minutes_to_empty`:      **Minutes of battery life left.** May be empty.
+- `minutes_to_full`:       **Minutes until the battery is charged.** May be empty (or 0 if full).
+- `capacity`:              **The present capacity in mWh.** mAh on macOS; on Apple Silicon this may be a percentage.
+- `design_capacity`:       **The factory capacity in mWh.** mAh on macOS.
+
+The following minimum OS versions are supported:
+
+- macOS 10.2 and later
+- Linux 2.6.24 and later
+- Windows Vista and later
+
+A `NotImplementedError` is raised for unsupported OSes.
+
+Pull requests and issues are always welcome for better compatibility! 
+
+## Other notes
 
 Also check out [`psutil`](https://github.com/giampaolo/psutil/)!
 
-As the whole package is **public domain**, please hack this code into whatever purpose needed.
-
-Note that the Python is just a wrapper around the annotated `.toml` of commands that give standardised output.
-(For compatibility this is converted to `.json` for use.)
+The whole package is **public domain**.
