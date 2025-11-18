@@ -1,5 +1,11 @@
 This package uses semantic versioning.
 
+- Version 1.0.4
+  - Pull request #8: Normalise for Linux `,`-style decimal points.
+
+- Version 1.0.3
+  - Miscellaneous refactors
+
 - Version 1.0
   - Rename `active` to more precise `is_discharging`.
   - Added `minutes_to_empty` and `minutes_to_full` functions (at least one of which will be blank)
