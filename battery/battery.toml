@@ -40,7 +40,7 @@ percent = "upower -d | grep percentage | head -n1 | grep -Eo '[0-9]+'"
 # upower outputs in minutes and hours; awk handles this
 minutes_to_empty = "upower -d | grep 'time to empty' | head -n1 | grep hours | grep -Eo '[0-9\\.]+ .' | awk '{print int($1 * ($2==\"m\"?1:60))}'"
 minutes_to_full = "upower -d | grep 'time to full' | head -n1 | grep hours | grep -Eo '[0-9\\.]+ .' | awk '{print int($1 * ($2==\"m\"?1:60))}'"
-capacity = "upower -d | grep 'energy-full:' | head -n1 | grep -Eo '[0-9]+' | awk '{print $1 * 1000}'"
+capacity = "upower -d | grep 'energy-full:' | head -n1 | grep -Eo '[0-9]+,[0-9]+' | sed 's/,/./' | awk '{print $1 * 1000}'"
 design_capacity = "upower -d | grep 'energy-full-design:' | head -n1 | grep -Eo '[0-9]+' | awk '{print $1 * 1000}'"
 
 [commands.windows] # using powershell
